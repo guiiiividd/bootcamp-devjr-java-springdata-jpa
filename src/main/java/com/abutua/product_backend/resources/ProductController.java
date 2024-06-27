@@ -5,12 +5,14 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.abutua.product_backend.models.Product;
+import com.abutua.product_backend.repositories.ProductRepository;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,32 +23,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 public class ProductController {
 
-    private List<Product> products = new ArrayList<>();
+    @Autowired
+    private ProductRepository productRepository;
 
-    @PostMapping("products")
-    public ResponseEntity<Product> save(@RequestBody Product product) {
-        product.setId(products.size() + 1);
-        products.add(product);
+    // private List<Product> products = new ArrayList<>();
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(product.getId())
-                .toUri();
+    // @PostMapping("products")
+    // public ResponseEntity<Product> save(@RequestBody Product product) {
+    //     product.setId(products.size() + 1);
+    //     products.add(product);
 
-        return ResponseEntity.created(location).body(product);
-    }
+    //     URI location = ServletUriComponentsBuilder
+    //             .fromCurrentRequest()
+    //             .path("/{id}")
+    //             .buildAndExpand(product.getId())
+    //             .toUri();
 
-    @GetMapping("products/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable int id) {
-        Product product = products.stream().filter(p -> p.getId() == id).findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
+    //     return ResponseEntity.created(location).body(product);
+    // }
+
+    // @GetMapping("products/{id}")
+    // public ResponseEntity<Product> getProduct(@PathVariable int id) {
+    //     Product product = products.stream().filter(p -> p.getId() == id).findFirst()
+    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
         
-        return ResponseEntity.ok(product);
-    }
+    //     return ResponseEntity.ok(product);
+    // }
 
     @GetMapping("products")
     public List<Product> getProducts() {
-        return products;
+        return productRepository.findAll();
     }
 }
