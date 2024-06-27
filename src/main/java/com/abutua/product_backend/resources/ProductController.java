@@ -2,9 +2,12 @@ package com.abutua.product_backend.resources;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.abutua.product_backend.models.Product;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,14 +15,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class ProductController {
 
-    private List<Product> products = Arrays.asList( 
-        new Product(1, "Nome do Produto 01", 100, "Descrição 01", 1, false, false), 
-        new Product(2, "Nome do Produto 02", 200, "Descrição 02", 2, true, true), 
-        new Product(3, "Nome do Produto 03", 300, "Descrição 03", 3, false, true));
+    private List<Product> products = new ArrayList<>();
+
+    @PostMapping("products")
+    public ResponseEntity<Product> save(@RequestBody Product product) {
+        product.setId(products.size() + 1);
+        products.add(product);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(product.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(product);
+    }
 
     @GetMapping("products/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable int id) {
