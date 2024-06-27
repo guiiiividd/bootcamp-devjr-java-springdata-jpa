@@ -1,10 +1,20 @@
 package com.abutua.product_backend.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "TBL_PRODUCT")
 public class Product {
 
+    @Id
     private int id;
     private String name;
     private String description;
+
+    @ManyToOne
     private Category category;
     private boolean promotion;
     private boolean newProduct;
