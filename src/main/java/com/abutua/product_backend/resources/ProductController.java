@@ -26,29 +26,25 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    // private List<Product> products = new ArrayList<>();
+    @PostMapping("products")
+    public ResponseEntity<Product> save(@RequestBody Product product) {
+        product = productRepository.save(product);
 
-    // @PostMapping("products")
-    // public ResponseEntity<Product> save(@RequestBody Product product) {
-    //     product.setId(products.size() + 1);
-    //     products.add(product);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(product.getId())
+                .toUri();
 
-    //     URI location = ServletUriComponentsBuilder
-    //             .fromCurrentRequest()
-    //             .path("/{id}")
-    //             .buildAndExpand(product.getId())
-    //             .toUri();
+        return ResponseEntity.created(location).body(product);
+    }
 
-    //     return ResponseEntity.created(location).body(product);
-    // }
-
-    // @GetMapping("products/{id}")
-    // public ResponseEntity<Product> getProduct(@PathVariable int id) {
-    //     Product product = products.stream().filter(p -> p.getId() == id).findFirst()
-    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
+    @GetMapping("products/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable int id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Not Found"));
         
-    //     return ResponseEntity.ok(product);
-    // }
+        return ResponseEntity.ok(product);
+    }
 
     @GetMapping("products")
     public List<Product> getProducts() {

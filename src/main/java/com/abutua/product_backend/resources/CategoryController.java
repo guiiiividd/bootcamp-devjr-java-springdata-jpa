@@ -16,20 +16,16 @@ import com.abutua.product_backend.repositories.CategoryRepository;
 
 @RestController
 public class CategoryController {
-    // private List<Category> categories = Arrays.asList(  new Category(1, "Produção Própria"), 
-    //                                                     new Category(2, "Nacional"), 
-    //                                                     new Category(3, "Importado"));
 
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // @GetMapping("categories/{id}")
-    // public ResponseEntity<Category> getCategory(@PathVariable int id) {
-    //     Category category = categories.stream().filter(c -> c.getId() == id).findFirst()
-    //             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found"));
+    @GetMapping("categories/{id}")
+    public ResponseEntity<Category> getCategory(@PathVariable int id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category Not Found"));
         
-    //     return ResponseEntity.ok(category);
-    // }
+        return ResponseEntity.ok(category);
+    }
 
     @GetMapping("categories")
     public List<Category> getCategories(){
